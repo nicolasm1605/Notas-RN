@@ -7,10 +7,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setNotas } from "./redux/notasSlice";
 import Notas from "./components/Notas";
 import EditarNota from "./components/EditarNota";
+import { TemaProvider } from "./context/TemaContext"; // ✅ Importa el TemaProvider
+import "react-native-gesture-handler";
 
 const Stack = createStackNavigator();
 
-// Componente que carga las notas al iniciar la app
 const InicializarNotas = ({ children }) => {
   const dispatch = useDispatch();
 
@@ -30,14 +31,16 @@ const InicializarNotas = ({ children }) => {
 export default function App() {
   return (
     <Provider store={store}>
-      <InicializarNotas>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Notas" component={Notas} />
-            <Stack.Screen name="EditarNota" component={EditarNota} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </InicializarNotas>
+      <TemaProvider> {/* ✅ Asegúrate de que esto envuelve toda la app */}
+        <InicializarNotas>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="Notas" component={Notas} />
+              <Stack.Screen name="EditarNota" component={EditarNota} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </InicializarNotas>
+      </TemaProvider>
     </Provider>
   );
 }

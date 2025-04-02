@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useDispatch } from "react-redux";
 import { agregarNota, editarNota, eliminarNota } from "../redux/notasSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import { useTema } from "../context/TemaContext"; // Asegúrate de importar el contexto
 
 const EditarNota = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const { nota } = route.params || {};
   const [titulo, setTitulo] = useState(nota?.titulo || "");
   const [contenido, setContenido] = useState(nota?.contenido || "");
+  
+  const { modoOscuro } = useTema(); // Usa el contexto de tema
 
   const guardarNota = async () => {
     const nuevaNota = { id: nota?.id || Date.now().toString(), titulo, contenido };
@@ -44,10 +47,23 @@ const EditarNota = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Título" value={titulo} onChangeText={setTitulo} />
-      <TextInput style={styles.input} placeholder="Contenido" value={contenido} onChangeText={setContenido} multiline />
-      <Button title="Guardar" onPress={guardarNota} />
+    <View style={[styles.container, { backgroundColor: modoOscuro ? "#222" : "#fff" }]}>
+      <TextInput
+        style={[styles.input, { color: modoOscuro ? "white" : "black", borderBottomColor: modoOscuro ? "gray" : "black" }]}
+        placeholder="Título"
+        placeholderTextColor={modoOscuro ? "gray" : "black"}
+        value={titulo}
+        onChangeText={setTitulo}
+      />
+      <TextInput
+        style={[styles.input, { color: modoOscuro ? "white" : "black", borderBottomColor: modoOscuro ? "gray" : "black" }]}
+        placeholder="Contenido"
+        placeholderTextColor={modoOscuro ? "gray" : "black"}
+        value={contenido}
+        onChangeText={setContenido}
+        multiline
+      />
+      <Button title="Guardar" onPress={guardarNota} color={modoOscuro ? "#4CAF50" : "#007AFF"} />
       {nota && (
         <TouchableOpacity style={styles.deleteButton} onPress={handleEliminarNota}>
           <Ionicons name="trash" size={24} color="white" />
@@ -58,7 +74,7 @@ const EditarNota = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  container: { flex: 1, padding: 20 },
   input: { borderBottomWidth: 1, marginBottom: 15, fontSize: 18, padding: 10 },
   deleteButton: { backgroundColor: "red", padding: 15, marginTop: 10, borderRadius: 5, alignItems: "center" },
 });
