@@ -7,8 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setNotas } from "./redux/notasSlice";
 import Notas from "./components/Notas";
 import EditarNota from "./components/EditarNota";
-import { TemaProvider } from "./context/TemaContext"; // ✅ Importa el TemaProvider
-import "react-native-gesture-handler";
+import { TemaProvider } from "./context/TemaContext"; 
+import 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
 
@@ -17,13 +17,22 @@ const InicializarNotas = ({ children }) => {
 
   useEffect(() => {
     const cargarNotas = async () => {
-      const notasGuardadas = await AsyncStorage.getItem("notas");
-      if (notasGuardadas) {
-        dispatch(setNotas(JSON.parse(notasGuardadas)));
+      try {
+        const notasGuardadas = await AsyncStorage.getItem("notas");
+
+        if (notasGuardadas) {
+          dispatch(setNotas(JSON.parse(notasGuardadas)));
+        } else {
+          // ✅ No agregamos ninguna nota inicial, solo dejamos la lista vacía
+          dispatch(setNotas([]));
+        }
+      } catch (error) {
+        console.error("Error al cargar las notas:", error);
       }
     };
+
     cargarNotas();
-  }, []);
+  }, [dispatch]);
 
   return children;
 };
@@ -31,7 +40,7 @@ const InicializarNotas = ({ children }) => {
 export default function App() {
   return (
     <Provider store={store}>
-      <TemaProvider> {/* ✅ Asegúrate de que esto envuelve toda la app */}
+      <TemaProvider>
         <InicializarNotas>
           <NavigationContainer>
             <Stack.Navigator>

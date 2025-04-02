@@ -38,7 +38,7 @@ const Notas = ({ navigation }) => {
   return (
     <View style={[styles.container, { backgroundColor: modoOscuro ? "#222" : "#f5f5f5" }]}>  
       <View style={styles.switchContainer}>
-        <Text style={{ color: modoOscuro ? "white" : "black" }}>Modo Oscuro</Text>
+        <Text style={{ color: modoOscuro ? "white" : "black" }}>Cambiar Modo Oscuro</Text>
         <Switch value={modoOscuro} onValueChange={toggleModoOscuro} />
       </View>
       
@@ -55,7 +55,12 @@ const Notas = ({ navigation }) => {
           </TouchableOpacity>
         )}
       />
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate("EditarNota")}> 
+
+      {/* Botón flotante para agregar una nueva nota */}
+      <TouchableOpacity 
+        style={styles.fab} 
+        onPress={() => navigation.navigate("EditarNota", { nota: null })}
+      > 
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>
     </View>
